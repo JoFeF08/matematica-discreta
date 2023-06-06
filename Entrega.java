@@ -189,7 +189,36 @@ class Entrega {
      * Podeu soposar que `a` està ordenat de menor a major.
      */
     static boolean exercici1(int[] a, int[][] rel) {
-      return false; // TO DO
+     //Una relació sobre un conjunt és reflixiva si per tot element del conjunt existeix una relació amb ell mateix 
+      boolean esReflexiva = true;
+        for (int element : a) {
+            boolean reflexivaPerElement = false;
+            for (int[] relacio : rel) {
+                if (element == relacio[0]) {
+                    if (relacio[0] == relacio[1]) {
+                        reflexivaPerElement = true;
+                        break;
+                    } else {
+                        reflexivaPerElement = false;
+                    }
+                }
+            } 
+            if (!reflexivaPerElement) {
+                esReflexiva = false;
+                break;
+            }
+      }
+  
+      
+      
+      
+      //Una relació sobre un conjunt A és d’equivalència si és reflexiva, simètrica i transitiva
+      boolean esDeEquivelencia = false;
+      if(esReflexiva && esSimetrica && esTransitiva){
+        esDeEquivelencia = true;
+      }
+  
+      return esDeEquivelencia;
     }
 
     /*
