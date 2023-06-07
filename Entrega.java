@@ -182,22 +182,24 @@ class Entrega {
    * int[] a, el codomini int[] b, i f un objecte de tipus Function<Integer, Integer> que podeu
    * avaluar com f.apply(x) (on x és d'a i el resultat f.apply(x) és de b).
    */
-  static class Tema2 {    
+ static class Tema2 {
     /*
      * Comprovau si la relació `rel` definida sobre `a` és d'equivalència.
      *
      * Podeu soposar que `a` està ordenat de menor a major.
      */
-    static boolean exercici1(int[] a, int[][] rel) { 
-      //Una relació sobre un conjunt A és d’equivalència si és reflexiva, simètrica i transitiva
-      boolean esDeEquivelencia = false;
-      if(esReflexiva(a,rel) && esSimetrica(rel) && esTransitiva(rel)){
-        esDeEquivelencia = true;
-      }
-  
-      return esDeEquivelencia;
-    }
-   
+        static boolean exercici1(int[] a, int[][] rel) {
+            //Una relació sobre un conjunt A és d’equivalència si és reflexiva, simètrica i transitiva
+            //Els mètodes emprats per mirar les tres propietats són deprés del exerxcici 4 abans de les proves
+            boolean esDeEquivelencia = false;
+
+            if (esReflexiva(a, rel) && esSimetrica(rel) && esTransitiva(rel)) {
+                esDeEquivelencia = true;
+            }
+
+            return esDeEquivelencia;
+        }
+
 
     /*
      * Comprovau si la relació `rel` definida sobre `a` és d'equivalència. Si ho és, retornau el
@@ -205,9 +207,32 @@ class Entrega {
      *
      * Podeu soposar que `a` està ordenat de menor a major.
      */
-    static int exercici2(int[] a, int[][] rel) {
-      return 0; // TO DO
-    }
+        static int exercici2(int[] a, int[][] rel) {
+            if (esReflexiva(a, rel) && esSimetrica(rel) && esTransitiva(rel)) {
+                int cardinal = 0;
+                boolean[] jaDinsClasse = new boolean[a.length];
+
+                for (int i = 0; i < a.length; i++) {
+                    if (!jaDinsClasse[i]) {
+                        jaDinsClasse[i] = true;
+                        cardinal++;
+
+                        for (int[] parella : rel) {
+                            if (parella[0] == a[i]) {
+                                int indexNum = 0;
+                                for (int k = 0; a[k] != parella[1]; k++) {
+                                    indexNum = k + 1;
+                                }
+                                jaDinsClasse[indexNum] = true;
+                            }
+                        }
+                    }
+
+                }
+                return cardinal;
+            }
+            return -1;
+        }
 
     /*
      * Comprovau si la relació `rel` definida entre `a` i `b` és una funció.
