@@ -182,75 +182,22 @@ class Entrega {
    * int[] a, el codomini int[] b, i f un objecte de tipus Function<Integer, Integer> que podeu
    * avaluar com f.apply(x) (on x és d'a i el resultat f.apply(x) és de b).
    */
-  static class Tema2 {
+  static class Tema2 {    
     /*
      * Comprovau si la relació `rel` definida sobre `a` és d'equivalència.
      *
      * Podeu soposar que `a` està ordenat de menor a major.
      */
-    static boolean exercici1(int[] a, int[][] rel) {
-     //Una relació sobre un conjunt és reflixiva si per tot element del conjunt existeix una relació amb ell mateix 
-      boolean esReflexiva = true;
-      for (int element : a) {
-          boolean reflexivaPerElement = false;
-          for (int[] relacio : rel) {
-              if (element == relacio[0]) {
-                  if (relacio[0] == relacio[1]) {
-                      reflexivaPerElement = true;
-                      break;
-                  } else {
-                      reflexivaPerElement = false;
-                  }
-              }
-          } 
-          if (!reflexivaPerElement) {
-              esReflexiva = false;
-              break;
-          }
-    }
-      
-      
-  
-      
-      
-      
+    static boolean exercici1(int[] a, int[][] rel) { 
       //Una relació sobre un conjunt A és d’equivalència si és reflexiva, simètrica i transitiva
       boolean esDeEquivelencia = false;
-      if(esReflexiva && esSimetrica(rel) && esTransitiva){
+      if(esReflexiva(a,rel) && esSimetrica(rel) && esTransitiva){
         esDeEquivelencia = true;
       }
   
       return esDeEquivelencia;
     }
-    private boolean esSimetrica(int[][] rel){
-        //Per ser Simétrica per tota relació de rel aRb existeix bRa dedins rel
-        // Notes: aRa és Simétrica i si aRb és simetrica bRa també ho és.
-        // Si un element de la relació no és Simétrica la relació no jo és.
-        boolean esSimetrica = true;
-        boolean[] simetricaPerRelacio = new boolean[rel.length];
-
-        for (int i = 0; i < rel.length && esSimetrica; i++) {
-            
-            for (int j = 0; j < rel.length && !simetricaPerRelacio[i]; j++) {
-                
-                if (rel[i][0] == rel[i][1]) {
-                    simetricaPerRelacio[i] = true;
-
-                } else if (rel[i][0] == rel[j][1] && rel[j][0] == rel[i][1]) {
-                    simetricaPerRelacio[i] = true;
-                    simetricaPerRelacio[j] = true;
-
-                } else {
-                    simetricaPerRelacio[i] = false;
-                }
-            }
-
-            if (!simetricaPerRelacio[i]) {
-                esSimetrica = false;
-            }
-        }
-      return esSimetrica    
-    }
+   
 
     /*
      * Comprovau si la relació `rel` definida sobre `a` és d'equivalència. Si ho és, retornau el
@@ -281,6 +228,77 @@ class Entrega {
      */
     static int exercici4(int[] dom, int[] codom, Function<Integer, Integer> f) {
       return -1; // TO DO
+    }
+    
+    
+    
+    
+     private static boolean esReflexiva(int[] a, int[][] rel) {
+        //Una relació sobre un conjunt és reflixiva si per tot element del conjunt existeix una relació amb ell mateix.
+        //Notes: Si per un valor del conjunt a no és reflexiva la relació no és reflexiva
+        boolean esReflexiva = true;
+        for (int i = 0; i < a.length && esReflexiva; i++) {
+            boolean reflexivaPerElement = false;
+            for (int j = 0; j < rel.length && !reflexivaPerElement; j++) {
+                if (a[i] == rel[j][0]) {
+                    reflexivaPerElement = rel[j][0] == rel[j][1];
+                }
+            }
+            if (!reflexivaPerElement) {
+                esReflexiva = false;
+            }
+        }
+        return esReflexiva;
+    }
+    
+     private boolean esSimetrica(int[][] rel){
+        //Per ser Simétrica per tota relació de rel aRb existeix bRa dedins rel
+        // Notes: aRa és Simétrica i si aRb és simetrica bRa també ho és.
+        // Si un element de la relació no és Simétrica la relació no jo és.
+        boolean esSimetrica = true;
+        boolean[] simetricaPerRelacio = new boolean[rel.length];
+
+        for (int i = 0; i < rel.length && esSimetrica; i++) {
+            for (int j = 0; j < rel.length && !simetricaPerRelacio[i]; j++) {
+                if (rel[i][0] == rel[i][1]) {
+                    simetricaPerRelacio[i] = true;
+                } else if (rel[i][0] == rel[j][1] && rel[j][0] == rel[i][1]) {
+                    simetricaPerRelacio[i] = true;
+                    simetricaPerRelacio[j] = true;
+                } else {
+                    simetricaPerRelacio[i] = false;
+                }
+            }
+            if (!simetricaPerRelacio[i]) {
+                esSimetrica = false;
+            }
+        }
+      return esSimetrica;    
+    }
+    
+    private static boolean esTransitiva(int[][] rel) {
+        //Una relació sobre un conjunt és Transitiva si per tota relació aRb i bRc existeix una aRc 
+        //Notes: Alhora de mirar les relacions bRb si existeix alguna relació aRb o bRa és transitiva 
+        //Si no existeixen parelles aRb bRc és transitiva, ja que si hipótesis es falsa l'implicació és verdadera 
+        boolean esTransitiva = true;
+        for (int i = 0; i < rel.length && esTransitiva; i++) {
+            boolean transitivaRelacio = true;
+            for (int j = 0; j < rel.length && transitivaRelacio; j++) {
+                if (rel[i][0] == rel[i][1]) {
+                    transitivaRelacio = true;
+                    break;
+                } else if (rel[i][1] == rel[j][0]) {
+                    transitivaRelacio = false;
+                    for (int k = 0; k < rel.length && !transitivaRelacio; k++) {
+                        transitivaRelacio = (rel[k][0] == rel[i][0] && rel[k][1] == rel[j][1]);
+                    }
+                }
+            }
+            if (!transitivaRelacio) {
+                esTransitiva = false;
+            }
+        }
+        return esTransitiva;
     }
 
     /*
