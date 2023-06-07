@@ -182,15 +182,16 @@ class Entrega {
    * int[] a, el codomini int[] b, i f un objecte de tipus Function<Integer, Integer> que podeu
    * avaluar com f.apply(x) (on x és d'a i el resultat f.apply(x) és de b).
    */
- static class Tema2 {
+  static class Tema2 {
+
     /*
      * Comprovau si la relació `rel` definida sobre `a` és d'equivalència.
      *
      * Podeu soposar que `a` està ordenat de menor a major.
-     */
+      */
         static boolean exercici1(int[] a, int[][] rel) {
             //Una relació sobre un conjunt A és d’equivalència si és reflexiva, simètrica i transitiva
-            //Els mètodes emprats per mirar les tres propietats són deprés del exerxcici 4 abans de les proves
+            //Els mètodes emprats per mirar les tres propietats són deprés del exerxcici 2 abans del 3
             boolean esDeEquivelencia = false;
 
             if (esReflexiva(a, rel) && esSimetrica(rel) && esTransitiva(rel)) {
@@ -201,14 +202,17 @@ class Entrega {
         }
 
 
-    /*
+        /*
      * Comprovau si la relació `rel` definida sobre `a` és d'equivalència. Si ho és, retornau el
      * cardinal del conjunt quocient de `a` sobre `rel`. Si no, retornau -1.
      *
      * Podeu soposar que `a` està ordenat de menor a major.
-     */
+         */
         static int exercici2(int[] a, int[][] rel) {
             if (esReflexiva(a, rel) && esSimetrica(rel) && esTransitiva(rel)) {
+                //Una vegada comprovat que és una relació d'equivalència miram quins nombres
+                //estan relacionats entre ells i incrementam amb aquell que encara no hem 
+                //relacionat amb ningú. Després miram amb quins està relacionat.
                 int cardinal = 0;
                 boolean[] jaDinsClasse = new boolean[a.length];
 
@@ -234,14 +238,101 @@ class Entrega {
             return -1;
         }
 
+        private static boolean esReflexiva(int[] a, int[][] rel) {
+            //Una relació sobre un conjunt és reflixiva si per tot element del conjunt existeix una relació amb ell mateix.
+            //Notes: Si per un valor del conjunt a no és reflexiva la relació no és reflexiva
+            boolean esReflexiva = true;
+            for (int i = 0; i < a.length && esReflexiva; i++) {
+                boolean reflexivaPerElement = false;
+                for (int j = 0; j < rel.length && !reflexivaPerElement; j++) {
+                    if (a[i] == rel[j][0]) {
+                        reflexivaPerElement = rel[j][0] == rel[j][1];
+                    }
+                }
+                if (!reflexivaPerElement) {
+                    esReflexiva = false;
+                }
+            }
+            return esReflexiva;
+        }
+
+        private static boolean esSimetrica(int[][] rel) {
+            //Per ser Simétrica per tota relació de rel aRb existeix bRa dedins rel
+            // Notes: aRa és Simétrica i si aRb és simetrica bRa també ho és.
+            // Si un element de la relació no és Simétrica la relació no jo és.
+            boolean esSimetrica = true;
+            boolean[] simetricaPerRelacio = new boolean[rel.length];
+
+            for (int i = 0; i < rel.length && esSimetrica; i++) {
+                for (int j = 0; j < rel.length && !simetricaPerRelacio[i]; j++) {
+                    if (rel[i][0] == rel[i][1]) {
+                        simetricaPerRelacio[i] = true;
+                    } else if (rel[i][0] == rel[j][1] && rel[j][0] == rel[i][1]) {
+                        simetricaPerRelacio[i] = true;
+                        simetricaPerRelacio[j] = true;
+                    } else {
+                        simetricaPerRelacio[i] = false;
+                    }
+                }
+                if (!simetricaPerRelacio[i]) {
+                    esSimetrica = false;
+                }
+            }
+            return esSimetrica;
+        }
+
+        private static boolean esTransitiva(int[][] rel) {
+            //Una relació sobre un conjunt és Transitiva si per tota relació aRb i bRc existeix una aRc 
+            //Notes: Alhora de mirar les relacions bRb si existeix alguna relació aRb o bRa és transitiva 
+            //Si no existeixen parelles aRb bRc és transitiva, ja que si hipótesis es falsa l'implicació és verdadera 
+            boolean esTransitiva = true;
+            for (int i = 0; i < rel.length && esTransitiva; i++) {
+                boolean transitivaRelacio = true;
+                for (int j = 0; j < rel.length && transitivaRelacio; j++) {
+                    if (rel[i][0] == rel[i][1]) {
+                        transitivaRelacio = true;
+                        break;
+                    } else if (rel[i][1] == rel[j][0]) {
+                        transitivaRelacio = false;
+                        for (int k = 0; k < rel.length && !transitivaRelacio; k++) {
+                            transitivaRelacio = (rel[k][0] == rel[i][0] && rel[k][1] == rel[j][1]);
+                        }
+                    }
+                }
+                if (!transitivaRelacio) {
+                    esTransitiva = false;
+                }
+            }
+            return esTransitiva;
+        }
+
     /*
      * Comprovau si la relació `rel` definida entre `a` i `b` és una funció.
      *
      * Podeu soposar que `a` i `b` estan ordenats de menor a major.
-     */
-    static boolean exercici3(int[] a, int[] b, int[][] rel) {
-      return false; // TO DO
-    }
+      */
+        static boolean exercici3(int[] a, int[] b, int[][] rel) {
+            //Per comprovar que rel és una funció s'ha de mirar que tots els elements d'A tengui un únic valor a B.
+            //És a dir, que en l'array de parelles rel cada element d'A surti una única vegada en primera posició.
+
+            boolean esFuncio = true;
+            int[] numBperA = new int[a.length];
+
+            for (int i = 0; i < a.length; i++) {
+                numBperA[i] = 0;
+                for (int[] rel1 : rel) {
+                    if (a[i] == rel1[0]) {
+                        numBperA[i]++;
+                    }
+                }
+            }
+            for (int vegades : numBperA) {
+                if (vegades != 1) {
+                    esFuncio = false;
+                }
+            }
+            return esFuncio;
+        }
 
     /*
      * Suposau que `f` és una funció amb domini `dom` i codomini `codom`.  Retornau:
@@ -251,192 +342,181 @@ class Entrega {
      *
      * Podeu suposar que `dom` i `codom` estàn ordenats de menor a major.
      */
-    static int exercici4(int[] dom, int[] codom, Function<Integer, Integer> f) {
-      return -1; // TO DO
-    }
-    
-    
-    
-    
-     private static boolean esReflexiva(int[] a, int[][] rel) {
-        //Una relació sobre un conjunt és reflixiva si per tot element del conjunt existeix una relació amb ell mateix.
-        //Notes: Si per un valor del conjunt a no és reflexiva la relació no és reflexiva
-        boolean esReflexiva = true;
-        for (int i = 0; i < a.length && esReflexiva; i++) {
-            boolean reflexivaPerElement = false;
-            for (int j = 0; j < rel.length && !reflexivaPerElement; j++) {
-                if (a[i] == rel[j][0]) {
-                    reflexivaPerElement = rel[j][0] == rel[j][1];
-                }
-            }
-            if (!reflexivaPerElement) {
-                esReflexiva = false;
-            }
-        }
-        return esReflexiva;
-    }
-    
-     private boolean esSimetrica(int[][] rel){
-        //Per ser Simétrica per tota relació de rel aRb existeix bRa dedins rel
-        // Notes: aRa és Simétrica i si aRb és simetrica bRa també ho és.
-        // Si un element de la relació no és Simétrica la relació no jo és.
-        boolean esSimetrica = true;
-        boolean[] simetricaPerRelacio = new boolean[rel.length];
+        static int exercici4(int[] dom, int[] codom, Function<Integer, Integer> f) {
 
-        for (int i = 0; i < rel.length && esSimetrica; i++) {
-            for (int j = 0; j < rel.length && !simetricaPerRelacio[i]; j++) {
-                if (rel[i][0] == rel[i][1]) {
-                    simetricaPerRelacio[i] = true;
-                } else if (rel[i][0] == rel[j][1] && rel[j][0] == rel[i][1]) {
-                    simetricaPerRelacio[i] = true;
-                    simetricaPerRelacio[j] = true;
-                } else {
-                    simetricaPerRelacio[i] = false;
+            int[] cardinals = esExhaustiva(dom, codom, f);
+            boolean esExhaustiva = true;
+            int max = cardinals[0];
+            for (int vegades : cardinals) {
+                if (vegades > max) {
+                    max = vegades;
+                }
+                if (vegades == 0) {
+                    esExhaustiva = false;
                 }
             }
-            if (!simetricaPerRelacio[i]) {
-                esSimetrica = false;
+            int llargariaImg = esInyectiva(dom, f);
+
+            if (esExhaustiva) {
+
+                return max;
+            } else if (dom.length == llargariaImg) {
+
+                return llargariaImg - codom.length;
+            } else {
+
+                return 0;
             }
         }
-      return esSimetrica;    
-    }
-    
-    private static boolean esTransitiva(int[][] rel) {
-        //Una relació sobre un conjunt és Transitiva si per tota relació aRb i bRc existeix una aRc 
-        //Notes: Alhora de mirar les relacions bRb si existeix alguna relació aRb o bRa és transitiva 
-        //Si no existeixen parelles aRb bRc és transitiva, ja que si hipótesis es falsa l'implicació és verdadera 
-        boolean esTransitiva = true;
-        for (int i = 0; i < rel.length && esTransitiva; i++) {
-            boolean transitivaRelacio = true;
-            for (int j = 0; j < rel.length && transitivaRelacio; j++) {
-                if (rel[i][0] == rel[i][1]) {
-                    transitivaRelacio = true;
-                    break;
-                } else if (rel[i][1] == rel[j][0]) {
-                    transitivaRelacio = false;
-                    for (int k = 0; k < rel.length && !transitivaRelacio; k++) {
-                        transitivaRelacio = (rel[k][0] == rel[i][0] && rel[k][1] == rel[j][1]);
+
+        private static int[] esExhaustiva(int[] dom, int[] codom, Function<Integer, Integer> f) {
+            int[] cardinals = new int[codom.length];
+
+            for (int i = 0; i < codom.length; i++) {
+                cardinals[i] = 0;
+                for (int j = 0; j < dom.length; j++) {
+                    if (codom[i] == f.apply(dom[j])) {
+                        cardinals[i]++;
                     }
                 }
             }
-            if (!transitivaRelacio) {
-                esTransitiva = false;
-            }
+            return cardinals;
         }
-        return esTransitiva;
-    }
 
-    /*
+        private static int esInyectiva(int[] dom, Function<Integer, Integer> f) {
+            int[] imtages = new int[dom.length];
+            boolean[] mesDeUn = new boolean[dom.length];
+            int llargariaImg = 0;
+
+            for (int i = 0; i < dom.length; i++) {
+                imtages[i] = f.apply(dom[i]);
+            }
+
+            for (int i = 0; i < imtages.length; i++) {
+                for (int j = 0; j < imtages.length; j++) {
+                    if (imtages[i] == imtages[j] && !mesDeUn[i]) {
+                        if (i == j) {
+                            llargariaImg++;
+                        } else {
+                            mesDeUn[i] = true;
+                            mesDeUn[j] = true;
+                        }
+                    }
+                }
+            }
+
+            return llargariaImg;
+        }
+
+     /*
      * Aquí teniu alguns exemples i proves relacionades amb aquests exercicis (vegeu `main`)
      */
-    static void tests() {
-      // Exercici 1
-      // `rel` és d'equivalencia?
+        static void tests() {
+            // Exercici 1
+            // `rel` és d'equivalencia?
 
-      assertThat(
-          exercici1(
-              new int[] { 0, 1, 2, 3 },
-              new int[][] { {0, 0}, {1, 1}, {2, 2}, {3, 3}, {1, 3}, {3, 1} }
-          )
-      );
+            assertThat(
+                    exercici1(
+                            new int[]{0, 1, 2, 3},
+                            new int[][]{{0, 0}, {1, 1}, {2, 2}, {3, 3}, {1, 3}, {3, 1}}
+                    )
+            );
 
-      assertThat(
-          !exercici1(
-              new int[] { 0, 1, 2, 3 },
-              new int[][] { {0, 0}, {1, 1}, {2, 2}, {3, 3}, {1, 2}, {1, 3}, {2, 1}, {3, 1} }
-          )
-      );
+            assertThat(
+                    !exercici1(
+                            new int[]{0, 1, 2, 3},
+                            new int[][]{{0, 0}, {1, 1}, {2, 2}, {3, 3}, {1, 2}, {1, 3}, {2, 1}, {3, 1}}
+                    )
+            );
 
-      // Exercici 2
-      // si `rel` és d'equivalència, quants d'elements té el seu quocient?
+            // Exercici 2
+            // si `rel` és d'equivalència, quants d'elements té el seu quocient?
+            final int[] int09 = {0, 1, 2, 3, 4, 5, 6, 7, 8};
 
-      final int[] int09 = { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
+            assertThat(
+                    exercici2(
+                            int09,
+                            generateRel(int09, int09, (x, y) -> x % 3 == y % 3)
+                    )
+                    == 3
+            );
 
-      assertThat(
-          exercici2(
-            int09,
-            generateRel(int09, int09, (x, y) -> x % 3 == y % 3)
-          )
-          == 3
-      );
+            assertThat(
+                    exercici2(
+                            new int[]{1, 2, 3},
+                            new int[][]{{1, 1}, {2, 2}}
+                    )
+                    == -1
+            );
 
-      assertThat(
-          exercici2(
-              new int[] { 1, 2, 3 },
-              new int[][] { {1, 1}, {2, 2} }
-          )
-          == -1
-      );
+            // Exercici 3
+            // `rel` és una funció?
+            final int[] int05 = {0, 1, 2, 3, 4, 5};
 
-      // Exercici 3
-      // `rel` és una funció?
+            assertThat(
+                    exercici3(
+                            int05,
+                            int09,
+                            generateRel(int05, int09, (x, y) -> x == y)
+                    )
+            );
 
-      final int[] int05 = { 0, 1, 2, 3, 4, 5 };
+            assertThat(
+                    !exercici3(
+                            int05,
+                            int09,
+                            generateRel(int05, int09, (x, y) -> x == y / 2)
+                    )
+            );
 
-      assertThat(
-          exercici3(
-            int05,
-            int09,
-            generateRel(int05, int09, (x, y) -> x == y)
-          )
-      );
-
-      assertThat(
-          !exercici3(
-            int05,
-            int09,
-            generateRel(int05, int09, (x, y) -> x == y/2)
-          )
-      );
-
-      // Exercici 4
-      // el major |f^-1(y)| de cada y de `codom` si f és exhaustiva
-      // sino, |im f| - |codom| si és injectiva
-      // sino, 0
-
-      assertThat(
-          exercici4(
-            int09,
-            int05,
-            x -> x / 4
-          )
-          == 0
-      );
-
-      assertThat(
-          exercici4(
-            int05,
-            int09,
-            x -> x + 3
-          )
-          == int05.length - int09.length
-      );
-
-      assertThat(
-          exercici4(
-            int05,
-            int05,
-            x -> (x + 3) % 6
-          )
-          == 1
-      );
-    }
-
-    /// Genera un array int[][] amb els elements {a, b} (a de as, b de bs) que satisfàn pred.test(a, b)
-    static int[][] generateRel(int[] as, int[] bs, BiPredicate<Integer, Integer> pred) {
-      ArrayList<int[]> rel = new ArrayList<>();
-
-      for (int a : as) {
-        for (int b : bs) {
-          if (pred.test(a, b)) {
-            rel.add(new int[] { a, b });
-          }
+        // Exercici 4
+        // el major |f^-1(y)| de cada y de `codom` si f és exhaustiva
+        // sino, |im f| - |codom| si és injectiva
+        // sino, 0
+  
+        assertThat(
+            exercici4(
+              int09,
+              int05,
+              x -> x / 4
+            )
+            == 0
+        );
+  
+        assertThat(
+            exercici4(
+              int05,
+              int09,
+              x -> x + 3
+            )
+            == int05.length - int09.length
+        );
+  
+        assertThat(
+            exercici4(
+              int05,
+              int05,
+              x -> (x + 3) % 6
+            )
+            == 1
+        );
         }
-      }
 
-      return rel.toArray(new int[][] {});
+        /// Genera un array int[][] amb els elements {a, b} (a de as, b de bs) que satisfàn pred.test(a, b)
+        static int[][] generateRel(int[] as, int[] bs, BiPredicate<Integer, Integer> pred) {
+            ArrayList<int[]> rel = new ArrayList<>();
+
+            for (int a : as) {
+                for (int b : bs) {
+                    if (pred.test(a, b)) {
+                        rel.add(new int[]{a, b});
+                    }
+                }
+            }
+
+            return rel.toArray(new int[][]{});
+        }
     }
-  }
 
   /*
    * Aquí teniu els exercicis del Tema 3 (Grafs).
