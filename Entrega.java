@@ -191,23 +191,23 @@ class Entrega {
     static boolean exercici1(int[] a, int[][] rel) {
      //Una relació sobre un conjunt és reflixiva si per tot element del conjunt existeix una relació amb ell mateix 
       boolean esReflexiva = true;
-        for (int element : a) {
-            boolean reflexivaPerElement = false;
-            for (int[] relacio : rel) {
-                if (element == relacio[0]) {
-                    if (relacio[0] == relacio[1]) {
-                        reflexivaPerElement = true;
-                        break;
-                    } else {
-                        reflexivaPerElement = false;
-                    }
-                }
-            } 
-            if (!reflexivaPerElement) {
-                esReflexiva = false;
-                break;
-            }
-      }
+      for (int element : a) {
+          boolean reflexivaPerElement = false;
+          for (int[] relacio : rel) {
+              if (element == relacio[0]) {
+                  if (relacio[0] == relacio[1]) {
+                      reflexivaPerElement = true;
+                      break;
+                  } else {
+                      reflexivaPerElement = false;
+                  }
+              }
+          } 
+          if (!reflexivaPerElement) {
+              esReflexiva = false;
+              break;
+          }
+    }
   
       
       
