@@ -208,17 +208,48 @@ class Entrega {
               break;
           }
     }
+      
+      
   
       
       
       
       //Una relació sobre un conjunt A és d’equivalència si és reflexiva, simètrica i transitiva
       boolean esDeEquivelencia = false;
-      if(esReflexiva && esSimetrica && esTransitiva){
+      if(esReflexiva && esSimetrica(rel) && esTransitiva){
         esDeEquivelencia = true;
       }
   
       return esDeEquivelencia;
+    }
+    private boolean esSimetrica(int[][] rel){
+        //Per ser Simétrica per tota relació de rel aRb existeix bRa dedins rel
+        // Notes: aRa és Simétrica i si aRb és simetrica bRa també ho és.
+        // Si un element de la relació no és Simétrica la relació no jo és.
+        boolean esSimetrica = true;
+        boolean[] simetricaPerRelacio = new boolean[rel.length];
+
+        for (int i = 0; i < rel.length && esSimetrica; i++) {
+            
+            for (int j = 0; j < rel.length && !simetricaPerRelacio[i]; j++) {
+                
+                if (rel[i][0] == rel[i][1]) {
+                    simetricaPerRelacio[i] = true;
+
+                } else if (rel[i][0] == rel[j][1] && rel[j][0] == rel[i][1]) {
+                    simetricaPerRelacio[i] = true;
+                    simetricaPerRelacio[j] = true;
+
+                } else {
+                    simetricaPerRelacio[i] = false;
+                }
+            }
+
+            if (!simetricaPerRelacio[i]) {
+                esSimetrica = false;
+            }
+        }
+      return esSimetrica    
     }
 
     /*
