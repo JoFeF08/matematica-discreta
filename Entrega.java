@@ -191,7 +191,7 @@ class Entrega {
     static boolean exercici1(int[] a, int[][] rel) { 
       //Una relació sobre un conjunt A és d’equivalència si és reflexiva, simètrica i transitiva
       boolean esDeEquivelencia = false;
-      if(esReflexiva(a,rel) && esSimetrica(rel) && esTransitiva){
+      if(esReflexiva(a,rel) && esSimetrica(rel) && esTransitiva(rel)){
         esDeEquivelencia = true;
       }
   
