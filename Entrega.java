@@ -331,7 +331,7 @@ class Entrega {
                     esFuncio = false;
                 }
             }
-           if(numBperA.length==0 || rel.length ==0){
+           if(numBperA.length == 0 || rel.length == 0){
                return false;
             }
             return esFuncio;
