@@ -314,6 +314,7 @@ class Entrega {
         static boolean exercici3(int[] a, int[] b, int[][] rel) {
             //Per comprovar que rel és una funció s'ha de mirar que tots els elements d'A tengui un únic valor a B.
             //És a dir, que en l'array de parelles rel cada element d'A surti una única vegada en primera posició.
+            //Abans de retornar cap valor miram si es buida.
 
             boolean esFuncio = true;
             int[] numBperA = new int[a.length];
