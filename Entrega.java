@@ -206,7 +206,7 @@ class Entrega {
      *
      * Podeu soposar que `a` està ordenat de menor a major.
          */
-        static int exercici2(int[] a, int[][] rel) {
+       static int exercici2(int[] a, int[][] rel) {
             if (esReflexiva(a, rel) && esSimetrica(rel) && esTransitiva(rel)) {
                 //Una vegada comprovat que és una relació d'equivalència miram quins nombres
                 //estan relacionats entre ells i incrementam amb aquell que encara no hem 
@@ -771,24 +771,34 @@ class Entrega {
         static int exercici3b(int n) {
             //La descomposició de n³ és igual a la de n elevada a tres
             //com que son els mateixos nombres però distint exponent, ens
-            //basta fer la de n, ja que més tard llevarem els nombres repetits
-            //Després aplicam la formula d'Euler
-
+            //basta fer la de n. Després llevam aquells nombres primers repetits
+            //i contam quantes vegades es repeteix i li sumam tres
+            System.out.println("n  " + n);
             ArrayList<Integer> descomposicio = exercici3a(n);
             ArrayList<Integer> primersDeN3 = new ArrayList<>();
+            ArrayList<Integer> frequenciaPrimers = new ArrayList<>();
 
-            for (Integer primer : descomposicio) {
-                if (!primersDeN3.contains(primer)) {
-                    primersDeN3.add(primer);
+            for (int i = 0; i < descomposicio.size(); i++) {
+                if (!primersDeN3.contains(descomposicio.get(i))) {
+                    primersDeN3.add(descomposicio.get(i));
+                    frequenciaPrimers.add(3);
+                } else {
+                    for (int j = 0; j < primersDeN3.size(); j++) {
+                        if (Objects.equals(primersDeN3.get(j), descomposicio.get(i))) {
+                            frequenciaPrimers.set(j, frequenciaPrimers.get(j) + 3);
+                        }
+                    }
                 }
             }
-
-            int nombreInvertibles = n;
-            for (int primer : primersDeN3) {
-                nombreInvertibles *= (1 - (1 / primer));
+            //Llavors com que si mcd(n,m)=1 => φ(m · n) = φ(m)φ(n) calculam els 
+            //primers per separat i els anam multiplicant
+            int nombre = 1;
+            for (int i = 0; i < primersDeN3.size(); i++) {
+                nombre *= (Math.pow(primersDeN3.get(i), frequenciaPrimers.get(i))) - (Math.pow(primersDeN3.get(i), frequenciaPrimers.get(i) - 1));
+                System.out.println("nom  " + nombre);
             }
-            int numFinal = nombreInvertibles * (n * n);
-            return numFinal;
+
+            return nombre;
         }
 
         /*
@@ -837,11 +847,11 @@ class Entrega {
                     )
             );
 
-            assertThat(exercici3a(30).equals(List.of(2, 3,5)));
-            assertThat(exercici3a(1291).equals(List.of(1291)));
-            assertThat(exercici3a(1292).equals(List.of(2, 2, 17, 19)));
+             assertThat(exercici3a(10).equals(List.of(2, 5)));
+             assertThat(exercici3a(1291).equals(List.of(1291)));
+             assertThat(exercici3a(1292).equals(List.of(2, 2, 17, 19 )));
 
-            assertThat(exercici3b(30) == 400);
+             assertThat(exercici3b(10) == 400);
 
             // Aquí 1292³ ocupa més de 32 bits amb el signe, però es pot resoldre sense calcular n³.
             assertThat(exercici3b(1292) == 961_496_064);
